@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Admin — Zee Creations</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #c0714a;
+      --text-dark: #1a1a1a;
+      --text-mid: #555;
+      --text-light: #999;
+      --border: #e8e3dc;
+      --off-white: #f8f5f1;
+      --cream: #f2ede6;
+      --white: #ffffff;
+      --radius: 6px;
+      --transition: 0.2s ease;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--sans); background: var(--off-white); color: var(--text-dark); }
+
+    /* ── LOGIN ── */
+    .login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--cream); }
+    .login-box { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:44px 40px; width:100%; max-width:380px; box-shadow:0 8px 40px rgba(0,0,0,0.07); }
+    .login-logo { font-family:var(--serif); font-size:1.7rem; letter-spacing:2px; text-align:center; margin-bottom:4px; }
+    .login-logo span { color:var(--accent); }
+    .login-sub { text-align:center; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:32px; }
+    .form-group { margin-bottom:16px; }
+    .form-group label { display:block; font-size:11px; letter-spacing:1px; text-transform:uppercase; font-weight:500; color:var(--text-mid); margin-bottom:6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width:100%; border:1px solid var(--border); padding:11px 14px; font-size:13px;
+      border-radius:var(--radius); outline:none; font-family:var(--sans); color:var(--text-dark);
+      background:var(--off-white); transition:border-color var(--transition);
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--accent); background:var(--white); }
+    .form-group textarea { resize:vertical; min-height:90px; }
+    .btn-primary {
+      background:var(--text-dark); color:var(--white); border:none; padding:13px 22px;
+      border-radius:var(--radius); font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+      font-weight:600; cursor:pointer; font-family:var(--sans); transition:background var(--transition);
+    }
+    .btn-primary:hover { background:var(--accent); }
+    .btn-primary.full { width:100%; }
+    .btn-secondary {
+      background:var(--white); color:var(--text-mid); border:1px solid var(--border);
+      padding:11px 18px; border-radius:var(--radius); font-size:11px; letter-spacing:1px;
+      text-transform:uppercase; font-weight:500; cursor:pointer; font-family:var(--sans);
+      transition:all var(--transition);
+    }
+    .btn-secondary:hover { border-color:var(--text-dark); color:var(--text-dark); }
+    .btn-danger { background:#fff0ee; color:#c0392b; border:1px solid #f5c6c0; padding:8px 14px; border-radius:var(--radius); font-size:11px; cursor:pointer; font-family:var(--sans); transition:all var(--transition); }
+    .btn-danger:hover { background:#c0392b; color:white; }
+    .login-error { background:#fdecea; color:#c62828; font-size:12px; padding:10px 14px; border-radius:var(--radius); margin-bottom:16px; display:none; }
+    .login-error.show { display:block; }
+
+    /* ── CMS SHELL ── */
+    .cms-app { display:none; }
+    .cms-app.visible { display:flex; min-height:100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width:220px; background:var(--text-dark); position:fixed; top:0; left:0;
+      height:100vh; overflow-y:auto; z-index:200; transition:transform 0.3s ease;
+    }
+    .sidebar-logo {
+      padding:22px 20px; border-bottom:1px solid rgba(255,255,255,0.08);
+      font-family:var(--serif); font-size:1.15rem; color:var(--white); letter-spacing:2px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .sidebar-logo span { color:var(--accent); }
+    .sidebar-close { display:none; background:none; border:none; color:rgba(255,255,255,0.4); font-size:18px; cursor:pointer; }
+    .nav-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.25); padding:16px 20px 6px; font-weight:600; }
+    .sidebar nav a {
+      display:flex; align-items:center; gap:10px; padding:12px 20px; font-size:13px;
+      color:rgba(255,255,255,0.55); border-left:3px solid transparent; text-decoration:none;
+      transition:all var(--transition);
+    }
+    .sidebar nav a i { font-size:14px; width:18px; }
+    .sidebar nav a:hover, .sidebar nav a.active { color:var(--white); background:rgba(255,255,255,0.05); border-left-color:var(--accent); }
+    .sidebar-footer { padding:16px 20px; border-top:1px solid rgba(255,255,255,0.08); margin-top:auto; }
+    .sidebar-user { font-size:12px; color:rgba(255,255,255,0.4); margin-bottom:10px; }
+    .logout-btn { width:100%; padding:9px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.55); border-radius:var(--radius); font-size:11px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; font-family:var(--sans); transition:all var(--transition); }
+    .logout-btn:hover { background:rgba(192,113,74,0.2); border-color:var(--accent); color:var(--accent); }
+
+    /* ── MAIN ── */
+    .cms-main { margin-left:220px; flex:1; display:flex; flex-direction:column; min-width:0; }
+    .topbar {
+      background:var(--white); border-bottom:1px solid var(--border); padding:0 28px;
+      height:58px; display:flex; align-items:center; justify-content:space-between;
+      position:sticky; top:0; z-index:100;
+    }
+    .topbar-left { display:flex; align-items:center; gap:12px; }
+    .menu-toggle { display:none; background:none; border:none; font-size:19px; cursor:pointer; color:var(--text-dark); }
+    .topbar h4 { font-family:var(--serif); font-size:1.05rem; }
+    .topbar-right { display:flex; align-items:center; gap:10px; }
+    .avatar { width:32px; height:32px; background:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:13px; font-weight:600; }
+
+    .cms-content { padding:28px; flex:1; }
+
+    /* ── VIEWS ── */
+    .view { display:none; }
+    .view.active { display:block; }
+
+    /* ── STATS ── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+    .stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:20px; }
+    .stat-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); margin-bottom:8px; }
+    .stat-value { font-family:var(--serif); font-size:2.1rem; color:var(--text-dark); line-height:1; }
+    .stat-sub { font-size:11px; color:var(--accent); margin-top:6px; }
+
+    /* ── PANEL ── */
+    .panel { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:22px; }
+    .panel-header { padding:14px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    .panel-header h5 { font-family:var(--serif); font-size:1rem; }
+    .panel-body { padding:20px; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x:auto; }
+    table.cms { width:100%; border-collapse:collapse; min-width:560px; }
+    table.cms th { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); font-weight:600; padding:10px 16px; text-align:left; background:var(--off-white); border-bottom:1px solid var(--border); white-space:nowrap; }
+    table.cms td { padding:13px 16px; border-bottom:1px solid var(--border); font-size:13px; vertical-align:middle; }
+    table.cms tr:last-child td { border-bottom:none; }
+    table.cms tr:hover td { background:var(--off-white); }
+    .thumb { width:44px; height:44px; object-fit:cover; border-radius:4px; background:var(--cream); display:block; }
+
+    /* ── BADGE ── */
+    .badge { display:inline-block; padding:3px 9px; border-radius:20px; font-size:10px; font-weight:600; }
+    .badge-green { background:#e8f5e9; color:#2e7d32; }
+    .badge-gray { background:#f5f5f5; color:#757575; }
+    .badge-blue { background:#e3f2fd; color:#1565c0; }
+    .badge-orange { background:#fff3e0; color:#e65100; }
+
+    /* ── ACTIONS ── */
+    .row-actions { display:flex; gap:6px; }
+    .icon-btn { width:30px; height:30px; border:1px solid var(--border); background:var(--white); border-radius:4px; cursor:pointer; font-size:13px; color:var(--text-mid); display:flex; align-items:center; justify-content:center; transition:all var(--transition); }
+    .icon-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .icon-btn.del:hover { border-color:#e74c3c; color:#e74c3c; }
+
+    /* ── MODAL ── */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:500; align-items:center; justify-content:center; padding:16px; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--white); border-radius:10px; width:100%; max-width:620px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+    .modal-header { padding:18px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--white); z-index:1; }
+    .modal-header h5 { font-family:var(--serif); font-size:1.1rem; }
+    .modal-close { background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-light); line-height:1; }
+    .modal-body { padding:24px; }
+    .modal-footer { padding:16px 24px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .grid-2 .full { grid-column:1/-1; }
+
+    /* ── TOAST ── */
+    .toast { position:fixed; bottom:24px; right:24px; background:var(--text-dark); color:white; padding:12px 20px; border-radius:var(--radius); font-size:13px; z-index:999; opacity:0; transform:translateY(10px); transition:all 0.3s ease; pointer-events:none; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    .toast.success { background:#2e7d32; }
+    .toast.error { background:#c62828; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align:center; padding:48px 20px; color:var(--text-light); }
+    .empty-state i { font-size:36px; margin-bottom:12px; opacity:0.3; display:block; }
+    .empty-state p { font-size:13px; }
+
+    /* ── TOGGLE ── */
+    .toggle-switch { position:relative; display:inline-block; width:40px; height:22px; }
+    .toggle-switch input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; cursor:pointer; inset:0; background:#ccc; border-radius:22px; transition:0.3s; }
+    .toggle-slider:before { content:""; position:absolute; height:16px; width:16px; left:3px; bottom:3px; background:white; border-radius:50%; transition:0.3s; }
+    input:checked + .toggle-slider { background:var(--accent); }
+    input:checked + .toggle-slider:before { transform:translateX(18px); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); box-shadow:4px 0 20px rgba(0,0,0,0.2); }
+      .sidebar-close { display:block; }
+      .cms-main { margin-left:0; }
+      .menu-toggle { display:block; }
+      .topbar { padding:0 16px; }
+      .cms-content { padding:16px; }
+      .grid-2 { grid-template-columns:1fr; }
+      .grid-2 .full { grid-column:1; }
+      .stats-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Zee<span>.</span></div>
+    <p class="login-sub">CMS Admin Panel</p>
+    <div class="login-error" id="loginError">Incorrect username or password.</div>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-primary full" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<!-- ══ CMS APP ══ -->
+<div class="cms-app" id="cmsApp">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      Zee<span>.</span>CMS
+      <button class="sidebar-close" onclick="toggleSidebar()"><i class="fa fa-times"></i></button>
+    </div>
+    <nav>
+      <div class="nav-label">Main</div>
+      <a href="#" class="active" onclick="showView('dashboard',this)"><i class="fa fa-chart-pie"></i> Dashboard</a>
+      <div class="nav-label">Content</div>
+      <a href="#" onclick="showView('blogs',this)"><i class="fa fa-newspaper"></i> Blog Posts</a>
+      <a href="#" onclick="showView('portfolio',this)"><i class="fa fa-briefcase"></i> Portfolio</a>
+      <div class="nav-label">Site</div>
+      <a href="index.html" target="_blank"><i class="fa fa-globe"></i> View Site</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" id="sidebarUser"></div>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="cms-main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+        <h4 id="topbarTitle">Dashboard</h4>
+      </div>
+      <div class="topbar-right">
+        <div class="avatar" id="topbarAvatar">N</div>
+      </div>
+    </div>
+
+    <div class="cms-content">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="view active" id="view-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Blog Posts</div>
+            <div class="stat-value" id="statPosts">—</div>
+            <div class="stat-sub">Published</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Drafts</div>
+            <div class="stat-value" id="statDrafts">—</div>
+            <div class="stat-sub">Unpublished</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Portfolio Items</div>
+            <div class="stat-value" id="statPortfolio">—</div>
+            <div class="stat-sub">Total items</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Featured</div>
+            <div class="stat-value" id="statFeatured">—</div>
+            <div class="stat-sub">Portfolio</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h5>Recent Blog Posts</h5><button class="btn-primary" onclick="showView('blogs',null);openBlogModal()">+ New Post</button></div>
+          <div class="table-wrap"><table class="cms" id="dashBlogTable"><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Status</th></tr></thead><tbody id="dashBlogBody"><tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-light)">Loading…</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ── BLOG POSTS ── -->
+      <div class="view" id="view-blogs">
+        <div class="panel">
+          <div class="panel-header">
+            <h5>Blog Posts</h5>
+            <button class="btn-primary" onclick="openBlogModal()">+ New Post</button>
+          </div>
+          <div class="table-wrap"><table class="cms"><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Published</th><th>Actions</th></tr></thead><tbody id="blogTableBody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-light)">Loading…</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ── PORTFOLIO ── -->
+      <div class="view" id="view-portfolio">
+        <div class="panel">
+          <div class="panel-header">
+            <h5>Portfolio Items</h5>
+            <button class="btn-primary" onclick="openPortfolioModal()">+ New Item</button>
+          </div>
+          <div class="table-wrap"><table class="cms"><thead><tr><th>Title</th><th>Category</th><th>Tags</th><th>Featured</th><th>Actions</th></tr></thead><tbody id="portfolioTableBody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-light)">Loading…</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+    </div><!-- /cms-content -->
+  </div><!-- /cms-main -->
+</div><!-- /cms-app -->
+
+<!-- ══ BLOG MODAL ══ -->
+<div class="modal-overlay" id="blogModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h5 id="blogModalTitle">New Blog Post</h5>
+      <button class="modal-close" onclick="closeModal('blogModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="blogId">
+      <div class="grid-2">
+        <div class="form-group full"><label>Title</label><input type="text" id="blogTitle" placeholder="Post title"></div>
+        <div class="form-group"><label>Category</label>
+          <select id="blogCategory">
+            <option>Web Development</option><option>App Design</option><option>UI/UX Design</option>
+            <option>SEO</option><option>E-Commerce</option><option>Freelancing</option><option>Design</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Published Date</label><input type="date" id="blogDate"></div>
+        <div class="form-group"><label>Slug</label><input type="text" id="blogSlug" placeholder="my-post-slug"></div>
+        <div class="form-group"><label>Cover Image URL</label><input type="text" id="blogImage" placeholder="assets/images/blog/blog-1.jpg"></div>
+        <div class="form-group full"><label>Excerpt</label><textarea id="blogExcerpt" rows="2" placeholder="Short summary shown on blog listing…"></textarea></div>
+        <div class="form-group full"><label>Content</label><textarea id="blogContent" rows="6" placeholder="Full post content…"></textarea></div>
+        <div class="form-group">
+          <label>Published</label>
+          <label class="toggle-switch"><input type="checkbox" id="blogPublished" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('blogModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveBlog()">Save Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PORTFOLIO MODAL ══ -->
+<div class="modal-overlay" id="portfolioModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h5 id="portfolioModalTitle">New Portfolio Item</h5>
+      <button class="modal-close" onclick="closeModal('portfolioModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="portfolioId">
+      <div class="grid-2">
+        <div class="form-group full"><label>Title</label><input type="text" id="portfolioTitle" placeholder="Project title"></div>
+        <div class="form-group"><label>Category</label>
+          <select id="portfolioCategory">
+            <option>Web Development</option><option>App Design</option><option>UI/UX Design</option>
+            <option>E-Commerce</option><option>SEO</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Sort Order</label><input type="number" id="portfolioOrder" placeholder="1" min="1"></div>
+        <div class="form-group full"><label>Description</label><textarea id="portfolioDesc" rows="3" placeholder="Brief project description…"></textarea></div>
+        <div class="form-group"><label>Image URL</label><input type="text" id="portfolioImage" placeholder="assets/images/portfolio/portfolio-1.jpg"></div>
+        <div class="form-group"><label>Live URL</label><input type="text" id="portfolioUrl" placeholder="https://…"></div>
+        <div class="form-group full"><label>Tags</label><input type="text" id="portfolioTags" placeholder="HTML, CSS, JavaScript"></div>
+        <div class="form-group">
+          <label>Featured</label>
+          <label class="toggle-switch"><input type="checkbox" id="portfolioFeatured"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('portfolioModal')">Cancel</button>
+      <button class="btn-primary" onclick="savePortfolio()">Save Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = 'https://super-md-35f5e85e.base44.app/functions/getContent';
+  const CRUD_API = 'https://super-md-35f5e85e.base44.app/functions/crudContent';
+  const CREDS = { user: 'admin', pass: 'dollar2025' };
+
+  let blogData = [];
+  let portfolioData = [];
+
+  // ── AUTH ──
+  function doLogin() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
+    if (u === CREDS.user && p === CREDS.pass) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('cmsApp').classList.add('visible');
+      document.getElementById('sidebarUser').textContent = 'Logged in as ' + u;
+      loadAll();
+    } else {
+      document.getElementById('loginError').classList.add('show');
+    }
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin(); });
+
+  function doLogout() {
+    document.getElementById('cmsApp').classList.remove('visible');
+    document.getElementById('loginScreen').style.display = '';
+    document.getElementById('loginPass').value = '';
+  }
+
+  // ── SIDEBAR ──
+  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+  // ── VIEWS ──
+  function showView(name, el) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+    if (el) el.classList.add('active');
+    document.getElementById('topbarTitle').textContent =
+      name === 'dashboard' ? 'Dashboard' : name === 'blogs' ? 'Blog Posts' : 'Portfolio';
+    document.getElementById('sidebar').classList.remove('open');
+  }
+
+  // ── LOAD DATA ──
+  async function loadAll() {
+    await Promise.all([loadBlogs(), loadPortfolio()]);
+    updateStats();
+  }
+
+  async function loadBlogs() {
+    try {
+      const r = await fetch(CRUD_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'list', entity:'BlogPost'}) });
+      const d = await r.json();
+      blogData = (d.data || []).sort((a,b) => new Date(b.published_date) - new Date(a.published_date));
+      renderBlogTable();
+      renderDashBlog();
+    } catch(e) { console.error(e); }
+  }
+
+  async function loadPortfolio() {
+    try {
+      const r = await fetch(CRUD_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'list', entity:'PortfolioItem'}) });
+      const d = await r.json();
+      portfolioData = (d.data || []).sort((a,b) => (a.sort_order||99)-(b.sort_order||99));
+      renderPortfolioTable();
+    } catch(e) { console.error(e); }
+  }
+
+  function updateStats() {
+    document.getElementById('statPosts').textContent = blogData.filter(p=>p.published).length;
+    document.getElementById('statDrafts').textContent = blogData.filter(p=>!p.published).length;
+    document.getElementById('statPortfolio').textContent = portfolioData.length;
+    document.getElementById('statFeatured').textContent = portfolioData.filter(p=>p.featured).length;
+  }
+
+  // ── RENDER BLOGS ──
+  function renderBlogTable() {
+    const tbody = document.getElementById('blogTableBody');
+    if (!blogData.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fa fa-newspaper"></i><p>No posts yet</p></div></td></tr>'; return; }
+    tbody.innerHTML = blogData.map(p => `
+      <tr>
+        <td><strong>${esc(p.title)}</strong><br><small style="color:var(--text-light)">${esc(p.slug||'')}</small></td>
+        <td><span class="badge badge-blue">${esc(p.category||'')}</span></td>
+        <td>${p.published_date||'—'}</td>
+        <td><span class="badge ${p.published?'badge-green':'badge-gray'}">${p.published?'Live':'Draft'}</span></td>
+        <td><div class="row-actions">
+          <button class="icon-btn" title="Edit" onclick="editBlog('${p.id}')"><i class="fa fa-pen"></i></button>
+          <button class="icon-btn del" title="Delete" onclick="deleteBlog('${p.id}')"><i class="fa fa-trash"></i></button>
+        </div></td>
+      </tr>`).join('');
+  }
+
+  function renderDashBlog() {
+    const tbody = document.getElementById('dashBlogBody');
+    const recent = blogData.slice(0,5);
+    if (!recent.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-light)">No posts yet</td></tr>'; return; }
+    tbody.innerHTML = recent.map(p => `
+      <tr>
+        <td><strong>${esc(p.title)}</strong></td>
+        <td><span class="badge badge-blue">${esc(p.category||'')}</span></td>
+        <td>${p.published_date||'—'}</td>
+        <td><span class="badge ${p.published?'badge-green':'badge-gray'}">${p.published?'Live':'Draft'}</span></td>
+      </tr>`).join('');
+  }
+
+  // ── RENDER PORTFOLIO ──
+  function renderPortfolioTable() {
+    const tbody = document.getElementById('portfolioTableBody');
+    if (!portfolioData.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fa fa-briefcase"></i><p>No items yet</p></div></td></tr>'; return; }
+    tbody.innerHTML = portfolioData.map(p => `
+      <tr>
+        <td><strong>${esc(p.title)}</strong></td>
+        <td><span class="badge badge-orange">${esc(p.category||'')}</span></td>
+        <td style="font-size:12px;color:var(--text-light)">${esc(p.tags||'')}</td>
+        <td>${p.featured ? '<span class="badge badge-green">Yes</span>' : '<span class="badge badge-gray">No</span>'}</td>
+        <td><div class="row-actions">
+          <button class="icon-btn" title="Edit" onclick="editPortfolio('${p.id}')"><i class="fa fa-pen"></i></button>
+          <button class="icon-btn del" title="Delete" onclick="deletePortfolio('${p.id}')"><i class="fa fa-trash"></i></button>
+        </div></td>
+      </tr>`).join('');
+  }
+
+  // ── BLOG MODAL ──
+  function openBlogModal(post) {
+    document.getElementById('blogModalTitle').textContent = post ? 'Edit Blog Post' : 'New Blog Post';
+    document.getElementById('blogId').value = post?.id || '';
+    document.getElementById('blogTitle').value = post?.title || '';
+    document.getElementById('blogCategory').value = post?.category || 'Web Development';
+    document.getElementById('blogDate').value = post?.published_date || new Date().toISOString().split('T')[0];
+    document.getElementById('blogSlug').value = post?.slug || '';
+    document.getElementById('blogImage').value = post?.cover_image || 'assets/images/blog/blog-1.jpg';
+    document.getElementById('blogExcerpt').value = post?.excerpt || '';
+    document.getElementById('blogContent').value = post?.content || '';
+    document.getElementById('blogPublished').checked = post ? !!post.published : true;
+    document.getElementById('blogModal').classList.add('open');
+  }
+  function editBlog(id) { openBlogModal(blogData.find(p => p.id === id)); }
+
+  async function saveBlog() {
+    const id = document.getElementById('blogId').value;
+    const data = {
+      title: document.getElementById('blogTitle').value,
+      category: document.getElementById('blogCategory').value,
+      published_date: document.getElementById('blogDate').value,
+      slug: document.getElementById('blogSlug').value,
+      cover_image: document.getElementById('blogImage').value,
+      excerpt: document.getElementById('blogExcerpt').value,
+      content: document.getElementById('blogContent').value,
+      author: 'Ndue',
+      published: document.getElementById('blogPublished').checked,
+    };
+    try {
+      const action = id ? 'update' : 'create';
+      const body = id ? { action, entity:'BlogPost', id, data } : { action, entity:'BlogPost', data };
+      const r = await fetch(CRUD_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      const res = await r.json();
+      if (res.ok) { closeModal('blogModal'); await loadBlogs(); updateStats(); showToast('Post saved!', 'success'); }
+      else showToast('Error: ' + res.error, 'error');
+    } catch(e) { showToast('Save failed', 'error'); }
+  }
+
+  async function deleteBlog(id) {
+    if (!confirm('Delete this post?')) return;
+    try {
+      const r = await fetch(CRUD_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'delete', entity:'BlogPost', id}) });
+      const res = await r.json();
+      if (res.ok) { await loadBlogs(); updateStats(); showToast('Post deleted', 'success'); }
+      else showToast('Error: ' + res.error, 'error');
+    } catch(e) { showToast('Delete failed', 'error'); }
+  }
+
+  // ── PORTFOLIO MODAL ──
+  function openPortfolioModal(item) {
+    document.getElementById('portfolioModalTitle').textContent = item ? 'Edit Portfolio Item' : 'New Portfolio Item';
+    document.getElementById('portfolioId').value = item?.id || '';
+    document.getElementById('portfolioTitle').value = item?.title || '';
+    document.getElementById('portfolioCategory').value = item?.category || 'Web Development';
+    document.getElementById('portfolioOrder').value = item?.sort_order || '';
+    document.getElementById('portfolioDesc').value = item?.description || '';
+    document.getElementById('portfolioImage').value = item?.image_url || 'assets/images/portfolio/portfolio-1.jpg';
+    document.getElementById('portfolioUrl').value = item?.live_url || '';
+    document.getElementById('portfolioTags').value = item?.tags || '';
+    document.getElementById('portfolioFeatured').checked = !!item?.featured;
+    document.getElementById('portfolioModal').classList.add('open');
+  }
+  function editPortfolio(id) { openPortfolioModal(portfolioData.find(p => p.id === id)); }
+
+  async function savePortfolio() {
+    const id = document.getElementById('portfolioId').value;
+    const data = {
+      title: document.getElementById('portfolioTitle').value,
+      category: document.getElementById('portfolioCategory').value,
+      sort_order: parseInt(document.getElementById('portfolioOrder').value) || 99,
+      description: document.getElementById('portfolioDesc').value,
+      image_url: document.getElementById('portfolioImage').value,
+      live_url: document.getElementById('portfolioUrl').value,
+      tags: document.getElementById('portfolioTags').value,
+      featured: document.getElementById('portfolioFeatured').checked,
+    };
+    try {
+      const action = id ? 'update' : 'create';
+      const body = id ? { action, entity:'PortfolioItem', id, data } : { action, entity:'PortfolioItem', data };
+      const r = await fetch(CRUD_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      const res = await r.json();
+      if (res.ok) { closeModal('portfolioModal'); await loadPortfolio(); updateStats(); showToast('Item saved!', 'success'); }
+      else showToast('Error: ' + res.error, 'error');
+    } catch(e) { showToast('Save failed', 'error'); }
+  }
+
+  async function deletePortfolio(id) {
+    if (!confirm('Delete this item?')) return;
+    try {
+      const r = await fetch(CRUD_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'delete', entity:'PortfolioItem', id}) });
+      const res = await r.json();
+      if (res.ok) { await loadPortfolio(); updateStats(); showToast('Item deleted', 'success'); }
+      else showToast('Error: ' + res.error, 'error');
+    } catch(e) { showToast('Delete failed', 'error'); }
+  }
+
+  // ── HELPERS ──
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  // Close modal on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+</script>
+</body>
+</html>
