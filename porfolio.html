@@ -74,97 +74,86 @@
   </div>
 
   <main id="main">
-    <section id="portfolio" class="portfolio">
+        <section id="portfolio" class="portfolio">
       <div class="container" data-aos="fade-up">
-
-        <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
-          <div>
-            <ul class="portfolio-flters">
-              <li data-filter="*" class="filter-active">All</li>
-              <li data-filter=".filter-web">Web Development</li>
-              <li data-filter=".filter-app">App Design</li>
-              <li data-filter=".filter-branding">Branding</li>
-            </ul>
-          </div>
-
-          <div class="row gy-4 portfolio-container">
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-web">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-1.jpg" data-gallery="portfolio-gallery-app" class="glightbox">
-                  <img src="assets/images/portfolio/product-1.jpg" class="img-fluid" alt="Web project 1">
-                </a>
-                <div class="portfolio-info">
-                  <h4>Business Website</h4>
-                  <p>Web Development</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-2.jpg" data-gallery="portfolio-gallery-app" class="glightbox">
-                  <img src="assets/images/portfolio/product-2.jpg" class="img-fluid" alt="App design project">
-                </a>
-                <div class="portfolio-info">
-                  <h4>Mobile App UI</h4>
-                  <p>App Design</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-branding">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-3.jpg" data-gallery="portfolio-gallery-app" class="glightbox">
-                  <img src="assets/images/portfolio/product-3.jpg" class="img-fluid" alt="Branding project">
-                </a>
-                <div class="portfolio-info">
-                  <h4>Brand Identity</h4>
-                  <p>Branding</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-web">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-4.jpg" data-gallery="portfolio-gallery-app" class="glightbox">
-                  <img src="assets/images/portfolio/product-4.jpg" class="img-fluid" alt="E-commerce project">
-                </a>
-                <div class="portfolio-info">
-                  <h4>E-Commerce Store</h4>
-                  <p>Web Development</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-5.jpg" data-gallery="portfolio-gallery-app" class="glightbox">
-                  <img src="assets/images/portfolio/product-5.jpg" class="img-fluid" alt="Dashboard UI">
-                </a>
-                <div class="portfolio-info">
-                  <h4>Admin Dashboard</h4>
-                  <p>App Design</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-web">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-6.jpg" data-gallery="portfolio-gallery-app" class="glightbox">
-                  <img src="assets/images/portfolio/product-6.jpg" class="img-fluid" alt="Landing page">
-                </a>
-                <div class="portfolio-info">
-                  <h4>Landing Page</h4>
-                  <p>Web Development</p>
-                </div>
-              </div>
-            </div>
-
+        <div class="section-header">
+          <h2>Portfolio</h2>
+          <p>A selection of web and app projects</p>
+        </div>
+        <div id="portfolio-filters" class="dynamic-filters"></div>
+        <div class="row gy-4 portfolio-container" id="portfolio-grid">
+          <div class="col-12 loading-state">
+            <i class="bi bi-arrow-repeat spin"></i> Loading projects&hellip;
           </div>
         </div>
       </div>
     </section>
+    <style>
+      .dynamic-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:32px; }
+      .filter-btn { padding:7px 18px; border-radius:20px; border:1px solid #e8e3dc; background:transparent; color:#555; font-size:12px; letter-spacing:.5px; cursor:pointer; font-family:inherit; transition:all .2s; }
+      .filter-btn.active { background:#1a1a1a; color:#fff; border-color:#1a1a1a; }
+      .loading-state { text-align:center; padding:60px 0; color:#999; font-size:14px; }
+      .loading-state .spin { display:block; font-size:28px; margin-bottom:10px; animation:spin 1s linear infinite; }
+      @keyframes spin { to { transform:rotate(360deg); } }
+    </style>
+    <script>
+    (function() {
+      var API = 'https://super-md-35f5e85e.base44.app/functions/crudContent';
+      var allItems = [];
+
+      function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      function buildFilters(items) {
+        var cats = ['All'];
+        items.forEach(function(i){ if (i.category && cats.indexOf(i.category)<0) cats.push(i.category); });
+        var wrap = document.getElementById('portfolio-filters');
+        wrap.innerHTML = cats.map(function(c){
+          return '<button class="filter-btn'+(c==='All'?' active':'')+'" onclick="filterPortfolio(this,\''+c+'\')">'+esc(c)+'</button>';
+        }).join('');
+      }
+
+      window.filterPortfolio = function(btn, cat) {
+        document.querySelectorAll('#portfolio-filters .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        render(cat==='All' ? allItems : allItems.filter(function(i){ return i.category===cat; }));
+      };
+
+      function render(items) {
+        var grid = document.getElementById('portfolio-grid');
+        if (!items.length) {
+          grid.innerHTML = '<div class="col-12" style="text-align:center;padding:60px;color:#999;">No projects in this category yet.</div>';
+          return;
+        }
+        grid.innerHTML = items.map(function(item) {
+          var img = esc(item.image_url || 'assets/images/portfolio/product-1.jpg');
+          var hasLink = item.live_url && item.live_url !== '#';
+          var tags = item.tags ? '<p style="font-size:11px;color:rgba(255,255,255,.55);margin-top:4px;">'+esc(item.tags)+'</p>' : '';
+          var linkBtn = hasLink ? '<a href="'+esc(item.live_url)+'" target="_blank" rel="noopener" class="details-link" title="View live"><i class="bi bi-arrow-up-right-circle-fill"></i></a>' : '';
+          var imgWrap = hasLink
+            ? '<a href="'+esc(item.live_url)+'" target="_blank" rel="noopener"><img src="'+img+'" class="img-fluid" alt="'+esc(item.title)+'" onerror="this.src=\'assets/images/portfolio/product-1.jpg\'"></a>'
+            : '<div><img src="'+img+'" class="img-fluid" alt="'+esc(item.title)+'" onerror="this.src=\'assets/images/portfolio/product-1.jpg\'"></div>';
+          return '<div class="col-xl-4 col-md-6 portfolio-item"><div class="portfolio-wrap">'
+            + imgWrap
+            + '<div class="portfolio-info"><h4>'+esc(item.title)+'</h4><p>'+esc(item.category)+'</p>'+tags+linkBtn+'</div>'
+            + '</div></div>';
+        }).join('');
+      }
+
+      fetch(API, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'list', entity:'PortfolioItem'})
+      }).then(function(r){ return r.json(); }).then(function(data) {
+        allItems = (data.data||[]).sort(function(a,b){ return (a.sort_order||99)-(b.sort_order||99); });
+        buildFilters(allItems);
+        render(allItems);
+      }).catch(function() {
+        document.getElementById('portfolio-grid').innerHTML =
+          '<div class="col-12" style="text-align:center;padding:40px;color:#c0714a;">Failed to load projects. Please try again later.</div>';
+      });
+    })();
+    </script>
   </main>
 
   <!-- Footer -->
