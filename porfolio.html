@@ -95,7 +95,151 @@
       .loading-state { text-align:center; padding:60px 0; color:#999; font-size:14px; }
       .loading-state .spin { display:block; font-size:28px; margin-bottom:10px; animation:spin 1s linear infinite; }
       @keyframes spin { to { transform:rotate(360deg); } }
-    </style>
+    
+  /* ── FOOTER ── */
+  #footer {
+    background: #111;
+    color: rgba(255,255,255,0.5);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+  }
+
+  /* Top strip — logo + socials */
+  .footer-top {
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .footer-top-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 40px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 2rem;
+    color: #fff;
+    letter-spacing: 3px;
+    text-decoration: none;
+    line-height: 1;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .footer-logo span { color: #c0714a; }
+  .footer-top-brand p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .footer-top-social {
+    display: flex;
+    gap: 10px;
+  }
+  .footer-top-social a {
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+  }
+  .footer-top-social a:hover {
+    border-color: #c0714a;
+    color: #c0714a;
+    background: rgba(192,113,74,0.08);
+  }
+
+  /* Mid — 3 col links */
+  .footer-mid {
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .footer-mid-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 40px 32px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .footer-col h4 {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+    margin: 0 0 18px;
+  }
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .footer-col ul li {
+    margin-bottom: 10px;
+  }
+  .footer-col ul a {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s ease;
+  }
+  .footer-col ul a:hover { color: #c0714a; }
+  .footer-contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    color: rgba(255,255,255,0.4);
+  }
+  .footer-contact li i {
+    color: #c0714a;
+    font-size: 14px;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+  .footer-contact li a {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-contact li a:hover { color: #c0714a; }
+
+  /* Bottom bar */
+  .footer-bar {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(255,255,255,0.2);
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .footer-bar strong { color: rgba(255,255,255,0.35); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .footer-top-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .footer-mid-inner { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .footer-top-inner, .footer-mid-inner, .footer-bar { padding-left: 20px; padding-right: 20px; }
+  }
+  @media (max-width: 480px) {
+    .footer-mid-inner { grid-template-columns: 1fr; }
+    .footer-bar { flex-direction: column; align-items: flex-start; }
+  }
+
+  </style>
     <script>
     (function() {
       var API = 'https://super-md-35f5e85e.base44.app/functions/crudContent';
@@ -158,18 +302,22 @@
 
   <!-- Footer -->
   <footer id="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <a href="index.html" class="footer-logo">Zee<span>.</span></a>
-        <p>Freelance web developer &amp; app designer<br>based in Johannesburg, South Africa.</p>
-        <div class="footer-social">
+    <div class="footer-top">
+      <div class="footer-top-inner">
+        <div class="footer-top-brand">
+          <a href="index.html" class="footer-logo">Zee<span>.</span></a>
+          <p>Freelance web developer &amp; app designer<br>based in Johannesburg, South Africa.</p>
+        </div>
+        <div class="footer-top-social">
           <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
           <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
           <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
           <a href="#" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
         </div>
       </div>
-      <div class="footer-links">
+    </div>
+    <div class="footer-mid">
+      <div class="footer-mid-inner">
         <div class="footer-col">
           <h4>Pages</h4>
           <ul>
@@ -194,15 +342,16 @@
         <div class="footer-col">
           <h4>Get In Touch</h4>
           <ul class="footer-contact">
-            <li><i class="bi bi-envelope"></i> <a href="mailto:thegreatmdala@gmail.com">thegreatmdala@gmail.com</a></li>
-            <li><i class="bi bi-telephone"></i> <a href="tel:+27833731455">+27 83 373 1455</a></li>
-            <li><i class="bi bi-geo-alt"></i> Johannesburg, South Africa</li>
+            <li><i class="bi bi-envelope"></i><a href="mailto:thegreatmdala@gmail.com">thegreatmdala@gmail.com</a></li>
+            <li><i class="bi bi-telephone"></i><a href="tel:+27833731455">+27 83 373 1455</a></li>
+            <li><i class="bi bi-geo-alt"></i><span>Johannesburg, South Africa</span></li>
           </ul>
         </div>
       </div>
     </div>
     <div class="footer-bar">
-      <p>&copy; 2026 <strong>Zee Creations</strong> &mdash; Ndue. All rights reserved.</p>
+      <span>&copy; 2026 <strong>Zee Creations</strong> &mdash; Ndue.</span>
+      <span>All rights reserved.</span>
     </div>
   </footer>
 
