@@ -246,67 +246,70 @@
     <!-- Featured -->
 
 
-    <!-- Portfolio Section -->
+        <!-- Portfolio Section -->
     <section id="portfolio" class="portfolio">
       <div class="container" data-aos="fade-up">
         <div class="section-header">
           <h2>My Portfolio</h2>
           <p>A selection of web and app projects</p>
         </div>
-        <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
-          <div>
-            <ul class="portfolio-flters">
-              <li data-filter="*" class="filter-active">All</li>
-              <li data-filter=".filter-app">App Design</li>
-              <li data-filter=".filter-product">App Development</li>
-              <li data-filter=".filter-branding">Branding</li>
-              <li data-filter=".filter-books">It Solutions</li>
-            </ul><!-- End Portfolio Filters -->
-          </div>
-
-          <div class="row gy-4 portfolio-container">
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-1.jpg" data-gallery="portfolio-gallery-app" class="glightbox"><img src="assets/images/portfolio/product-1.jpg" class="img-fluid" alt=""></a>
-              </div>
-            </div><!-- End Portfolio Item -->
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-product">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-2.jpg" data-gallery="portfolio-gallery-app" class="glightbox"><img src="assets/images/portfolio/product-2.jpg" class="img-fluid" alt=""></a>
-              </div>
-            </div><!-- End Portfolio Item -->
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-branding">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-3.jpg" data-gallery="portfolio-gallery-app" class="glightbox"><img src="assets/images/portfolio/product-3.jpg" class="img-fluid" alt=""></a>
-              </div>
-            </div><!-- End Portfolio Item -->
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-books">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-4.jpg" data-gallery="portfolio-gallery-app" class="glightbox"><img src="assets/images/portfolio/product-4.jpg" class="img-fluid" alt=""></a>
-              </div>
-            </div><!-- End Portfolio Item -->
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-5.jpg" data-gallery="portfolio-gallery-app" class="glightbox"><img src="assets/images/portfolio/product-5.jpg" class="img-fluid" alt=""></a>
-              </div>
-            </div><!-- End Portfolio Item -->
-
-            <div class="col-xl-4 col-md-6 portfolio-item filter-branding">
-              <div class="portfolio-wrap">
-                <a href="assets/images/portfolio/product-6.jpg" data-gallery="portfolio-gallery-app" class="glightbox"><img src="assets/images/portfolio/product-6.jpg" class="img-fluid" alt=""></a>
-              </div>
-            </div><!-- End Portfolio Item -->
-          </div><!-- End Portfolio Container -->
-
+        <div id="hp-portfolio-filters" class="hp-filters"></div>
+        <div class="row gy-4 portfolio-container" id="hp-portfolio-grid">
+          <div class="col-12 hp-loading"><i class="bi bi-arrow-repeat hp-spin"></i> Loading&hellip;</div>
         </div>
-
+        <div style="text-align:center;margin-top:32px;">
+          <a href="porfolio.html" style="display:inline-block;padding:11px 28px;border:1px solid #1a1a1a;border-radius:4px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;color:#1a1a1a;transition:all .2s;" onmouseover="this.style.background='#1a1a1a';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#1a1a1a'">View All Projects</a>
+        </div>
       </div>
     </section>
+    <style>
+      .hp-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
+      .hp-fbtn{padding:6px 16px;border-radius:20px;border:1px solid #e8e3dc;background:transparent;color:#555;font-size:12px;letter-spacing:.5px;cursor:pointer;font-family:inherit;transition:all .2s;}
+      .hp-fbtn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+      .hp-loading{text-align:center;padding:60px 0;color:#999;font-size:14px;}
+      .hp-spin{display:block;font-size:26px;margin-bottom:10px;animation:hpspin 1s linear infinite;}
+      @keyframes hpspin{to{transform:rotate(360deg);}}
+    </style>
+    <script>
+    (function(){
+      var API='https://super-md-35f5e85e.base44.app/functions/crudContent';
+      var all=[];
+      function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+      function buildF(items){
+        var cats=['All'];
+        items.forEach(function(i){if(i.category&&cats.indexOf(i.category)<0)cats.push(i.category);});
+        document.getElementById('hp-portfolio-filters').innerHTML=cats.map(function(c){
+          return '<button class="hp-fbtn'+(c==='All'?' active':'')+'" onclick="hpFilter(this,\''+c+'\')">'+esc(c)+'</button>';
+        }).join('');
+      }
+      window.hpFilter=function(btn,cat){
+        document.querySelectorAll('.hp-fbtn').forEach(function(b){b.classList.remove('active');});
+        btn.classList.add('active');
+        render(cat==='All'?all:all.filter(function(i){return i.category===cat;}));
+      };
+      function render(items){
+        var g=document.getElementById('hp-portfolio-grid');
+        if(!items.length){g.innerHTML='<div class="col-12" style="text-align:center;padding:40px;color:#999;">Nothing here yet.</div>';return;}
+        g.innerHTML=items.slice(0,6).map(function(item){
+          var img=esc(item.image_url||'assets/images/portfolio/product-1.jpg');
+          var hasLink=item.live_url&&item.live_url!=='#';
+          var wrap=hasLink
+            ?'<a href="'+esc(item.live_url)+'" target="_blank" rel="noopener"><img src="'+img+'" class="img-fluid" alt="'+esc(item.title)+'" onerror="this.src=\'assets/images/portfolio/product-1.jpg\'"></a>'
+            :'<div><img src="'+img+'" class="img-fluid" alt="'+esc(item.title)+'" onerror="this.src=\'assets/images/portfolio/product-1.jpg\'"></div>';
+          var linkBtn=hasLink?'<a href="'+esc(item.live_url)+'" target="_blank" rel="noopener" class="details-link" title="View live"><i class="bi bi-arrow-up-right-circle-fill"></i></a>':'';
+          return '<div class="col-xl-4 col-md-6 portfolio-item"><div class="portfolio-wrap">'+wrap
+            +'<div class="portfolio-info"><h4>'+esc(item.title)+'</h4><p>'+esc(item.category)+'</p>'+linkBtn+'</div></div></div>';
+        }).join('');
+      }
+      fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'list',entity:'PortfolioItem'})})
+        .then(function(r){return r.json();}).then(function(d){
+          all=(d.data||[]).sort(function(a,b){return(a.sort_order||99)-(b.sort_order||99);});
+          buildF(all);render(all);
+        }).catch(function(){
+          document.getElementById('hp-portfolio-grid').innerHTML='<div class="col-12" style="text-align:center;padding:40px;color:#c0714a;">Failed to load projects.</div>';
+        });
+    })();
+    </script>
     <!-- End Portfolio Section -->
 
     <!-- Start Pricing Section -->
@@ -755,78 +758,50 @@
 
 
     <!--  Recent Blog Posts Section  -->
-    <section id="recent-posts" class="recent-posts sections-bg">
+        <section id="recent-posts" class="recent-posts sections-bg">
       <div class="container" data-aos="fade-up">
         <div class="section-header">
           <h2>Latest Posts</h2>
           <p>Thoughts on web development, design, and freelancing</p>
         </div>
-        <div class="row gy-4">
-
-          <div class="col-lg-4">
-            <article>
-              <div class="post-img">
-                <img src="assets/images/blog/blog-1.jpg" alt="5 Things Every Small Business Website Needs in 2026" class="img-fluid">
-              </div>
-              <p class="post-category">Web Development</p>
-              <h2 class="title">
-                <a href="blogs.html">5 Things Every Small Business Website Needs in 2026</a>
-              </h2>
-              <div class="d-flex align-items-center">
-                <div class="post-meta">
-                  <p class="post-author">Ndue</p>
-                  <p class="post-date">
-                    <time datetime="2026-03-10">Mar 10, 2026</time>
-                  </p>
-                </div>
-              </div>
-            </article>
-          </div><!-- End post list item -->
-
-          <div class="col-lg-4">
-            <article>
-              <div class="post-img">
-                <img src="assets/images/blog/blog-2.jpg" alt="Why Your App Needs a Design System Before You Write a Single Line of Code" class="img-fluid">
-              </div>
-              <p class="post-category">App Design</p>
-              <h2 class="title">
-                <a href="blogs.html">Why Your App Needs a Design System Before You Write a Single Line of Code</a>
-              </h2>
-              <div class="d-flex align-items-center">
-                <div class="post-meta">
-                  <p class="post-author">Ndue</p>
-                  <p class="post-date">
-                    <time datetime="2026-01-22">Jan 22, 2026</time>
-                  </p>
-                </div>
-              </div>
-            </article>
-          </div><!-- End post list item -->
-
-          <div class="col-lg-4">
-            <article>
-              <div class="post-img">
-                <img src="assets/images/blog/blog-3.jpg" alt="How to Get Your Johannesburg Business Found on Google" class="img-fluid">
-              </div>
-              <p class="post-category">SEO</p>
-              <h2 class="title">
-                <a href="blogs.html">How to Get Your Johannesburg Business Found on Google</a>
-              </h2>
-              <div class="d-flex align-items-center">
-                <div class="post-meta">
-                  <p class="post-author">Ndue</p>
-                  <p class="post-date">
-                    <time datetime="2025-11-05">Nov 5, 2025</time>
-                  </p>
-                </div>
-              </div>
-            </article>
-          </div><!-- End post list item -->
-
-        </div><!-- End recent posts list -->
-
+        <div class="row gy-4" id="hp-blog-grid">
+          <div class="col-12 hp-loading"><i class="bi bi-arrow-repeat hp-spin"></i> Loading&hellip;</div>
+        </div>
+        <div style="text-align:center;margin-top:32px;">
+          <a href="blogs.html" style="display:inline-block;padding:11px 28px;border:1px solid #1a1a1a;border-radius:4px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;color:#1a1a1a;transition:all .2s;" onmouseover="this.style.background='#1a1a1a';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#1a1a1a'">Read All Posts</a>
+        </div>
       </div>
-    </section><!-- End Recent Blog Posts Section -->
+    </section>
+    <script>
+    (function(){
+      var API='https://super-md-35f5e85e.base44.app/functions/crudContent';
+      function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+      function fmt(str){if(!str)return'';var d=new Date(str);return d.toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'});}
+      fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'list',entity:'BlogPost'})})
+        .then(function(r){return r.json();}).then(function(data){
+          var posts=(data.data||[]).filter(function(p){return p.published;})
+            .sort(function(a,b){return new Date(b.published_date)-new Date(a.published_date);})
+            .slice(0,3);
+          var g=document.getElementById('hp-blog-grid');
+          if(!posts.length){g.innerHTML='<div class="col-12" style="text-align:center;padding:40px;color:#999;">No posts yet.</div>';return;}
+          g.innerHTML=posts.map(function(p){
+            var img=esc(p.cover_image||'assets/images/blog/blog-1.jpg');
+            var excerpt=p.excerpt?'<p style="font-size:13px;color:#777;margin:0 0 12px;line-height:1.6;">'+esc(p.excerpt)+'</p>':'';
+            return '<div class="col-lg-4"><article>'
+              +'<div class="post-img"><img src="'+img+'" alt="'+esc(p.title)+'" class="img-fluid" onerror="this.src=\'assets/images/blog/blog-1.jpg\'"></div>'
+              +'<p class="post-category">'+esc(p.category||'')+'</p>'
+              +'<h2 class="title"><a href="blogs.html">'+esc(p.title)+'</a></h2>'
+              +excerpt
+              +'<div class="d-flex align-items-center"><div class="post-meta">'
+              +'<p class="post-author">'+esc(p.author||'Ndue')+'</p>'
+              +'<p class="post-date"><time datetime="'+esc(p.published_date)+'">'+fmt(p.published_date)+'</time></p>'
+              +'</div></div></article></div>';
+          }).join('');
+        }).catch(function(){
+          document.getElementById('hp-blog-grid').innerHTML='<div class="col-12" style="text-align:center;padding:40px;color:#c0714a;">Failed to load posts.</div>';
+        });
+    })();
+    </script><!-- End Recent Blog Posts Section -->
 
     <!-- Start Contact Section -->
     <div id="contact" class="contact-section section">
