@@ -58,31 +58,52 @@
   </header>
   <!-- End Header -->
 
-  <!--  Hero Section  -->
+    <!--  Hero Section  -->
   <section id="hero" class="hero sticked-header-offset">
-
     <div id="particles-js"></div>
     <div id="repulse-circle-div"></div>
     <div class="container position-relative">
-      <div class="row gy-5 aos-init aos-animate">
-        <div class="col-lg-7 offset-lg-5 dark-bg order-lg-1 d-flex flex-column justify-content-start text-left caption">
-          <h2 data-aos="fade-up">Crafting Digital Experiences <span>That Get Results</span><span class="circle" data-aos="fade-right" data-aos-delay="800">.</span></h2>
-          <p data-aos="fade-up" data-aos-delay="400">Hello! I'm Ndue, a Johannesburg-based freelance web developer and app designer. I build clean, fast, and purposeful digital products for businesses and individuals across South Africa.</p>
-          <div class="social" data-aos="fade-up" data-aos-delay="600">
-            <a href="#"><i class="bi bi-twitter"></i></a>
-            <a href="#"><i class="bi bi-facebook"></i></a>
-            <a href="#"><i class="bi bi-whatsapp"></i></a>
-            <a href="#"><i class="bi bi-instagram"></i></a>
-          </div>
-          <div class="d-flex justify-content-start">
-            <a href="#contact" class="btn-get-started mr-20" data-aos="fade-up" data-aos-delay="800">Get Quotes</a>
-            <a href="#services" class="btn-get-started" data-aos="fade-up" data-aos-delay="1000">Get Started</a>
-          </div>
+      <div class="hero-content">
+        <p class="hero-greeting" data-aos="fade-up">Hello, I&rsquo;m Ndue</p>
+        <h2 data-aos="fade-up" data-aos-delay="100">
+          I build <span class="hero-accent">clean</span>, fast digital products
+          <span class="hero-accent">that get results</span><span class="circle" data-aos="fade-right" data-aos-delay="800">.</span>
+        </h2>
+        <p class="hero-desc" data-aos="fade-up" data-aos-delay="300">
+          Freelance web developer & app designer based in Johannesburg.
+          Websites, apps, and e-commerce for businesses across South Africa.
+        </p>
+        <div class="hero-actions" data-aos="fade-up" data-aos-delay="500">
+          <a href="contact.html" class="btn-hero-primary">Get a Quote</a>
+          <a href="#services" class="btn-hero-secondary">View Services</a>
+        </div>
+        <div class="hero-socials" data-aos="fade-up" data-aos-delay="700">
+          <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <a href="#" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
         </div>
       </div>
     </div>
   </section>
   <!-- End Hero Section -->
+
+    <style>
+      .hero-content { max-width: 640px; padding: 100px 0 80px; position: relative; z-index: 2; }
+      .hero-greeting { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: #c0714a; font-weight: 600; margin-bottom: 16px; }
+      .hero-content h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 600; color: #fff; line-height: 1.15; margin: 0 0 24px; }
+      .hero-accent { color: #c0714a; }
+      .hero-desc { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.8; max-width: 480px; margin: 0 0 36px; }
+      .hero-actions { display: flex; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+      .btn-hero-primary { display: inline-block; padding: 14px 32px; background: #c0714a; color: #fff; border-radius: 6px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; text-decoration: none; transition: all 0.25s ease; }
+      .btn-hero-primary:hover { background: #fff; color: #1a1a1a; }
+      .btn-hero-secondary { display: inline-block; padding: 14px 32px; border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 6px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; text-decoration: none; transition: all 0.25s ease; }
+      .btn-hero-secondary:hover { border-color: #c0714a; color: #c0714a; }
+      .hero-socials { display: flex; gap: 12px; }
+      .hero-socials a { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); font-size: 15px; text-decoration: none; transition: all 0.25s ease; }
+      .hero-socials a:hover { border-color: #c0714a; color: #c0714a; background: rgba(192,113,74,0.08); }
+      @media (max-width:768px) { .hero-content { padding: 60px 0 50px; } }
+    </style>
 
   <main id="main">
         <!-- Start Service Section -->
